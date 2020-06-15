@@ -15,15 +15,17 @@
 <br>
 <center><h4><span id='most-common-words'>Most Common Words</span></h4></center>
 <br>
-<img src='data:image/png;base64,{{word_cloud_image}}' width=200/>
+<img id="word_cloud_image" width=200/>
 <br>
-<center><h4><span id='salary_prediction_text'>{{salary_prediction_text}}</span></h4></center>
+<center><h4><span id='salary_prediction_text'></span></h4></center>
 <br>
-<center><span id='salary-range'>{{salaryRange}}</span></center>
+<center><span id='salary-range'></span></center>
 
 </html>
 
-<script>
+<script> 
+
+
 $('#analyze').on('click', function() {
 				var description = $('#description').text()
 				$.ajax({	
@@ -33,9 +35,12 @@ $('#analyze').on('click', function() {
 	            })
 	            .done(function(response) {
 	            	$('#salary-range').text(response.salaryRange)
+	            	//$('#word_cloud_image').attr("src", 'data:image/png;base64,' + response.word_cloud_image)
+	            	$('#salary_prediction_text').text("The Salary Range of this Job is: ")
+				});
 	            
 	            
 	        });
 
-}
+									
 </script>

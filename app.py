@@ -7,7 +7,7 @@ This file creates your application.
 """
 
 import os
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, render_template, request, redirect, Response, url_for
 
 import pandas as pd
 import numpy as np
@@ -15,6 +15,8 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 import io
 import base64
+import PIL
+
 
 from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvasAgg
 from matplotlib.figure import Figure
@@ -45,22 +47,17 @@ tfidf_vectorizer = pickle.load(open('fitted_vectorizer.pickle','rb'))
 # Routing for your application.
 ###
 
-@app.route('/')
+@app.route('/', methods=['GET'])
 def home():
     """Render website's home page."""
-    return render_template('home.html', salaryRange="", salary_prediction_text="", word_cloud_image="")
+    return render_template('home.html')
 
 
-@app.route('/predict', methods=['GET','POST'])
+@app.route('/predict', methods=['POST'])
 def salary_predictor():
 	description = request.form.get('description')
 	result = model.predict(tfidf_vectorizer.transform([description]))
-	return render_template('home.html', salaryRange = labels[result[0]], salary_prediction_text="The salary range of this job:")
 
-"""
-@app.route('/predict', methods=['POST'])
-def word_cloud():
-	description = request.form.get('description')
 	stopwords = set(STOPWORDS)
 	stopwords.update(["to","sex","may","Ability to","Full time","Experience with", "Job Type"])
 
@@ -77,20 +74,15 @@ def word_cloud():
 	buf.seek(0)
 
 	#Embed the result in the html output
-	img = base64.b64encode(buf.getvalue())
-    return img
+	img = base64.encodebytes(buf.getvalue()).decode("ascii")
+	return jsonify(salaryRange=labels[result[0]], word_cloud_image=img)
+	
+
+
+
+
+"""return render_template('home.html', salaryRange = labels[result[0]], salary_prediction_text="The salary range of this job:")
 """
-
-
-
-
-
-
-
-
-
-
-
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -8,12 +8,10 @@ seaborn
 matplotlib
 pickle-mixin
 sklearn
-PIL
 wordcloud
 joblib
-os
-io	
-base64
+Pillow
+
 
 # ----------------------
 # Testing
