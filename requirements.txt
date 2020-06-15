@@ -9,8 +9,11 @@ matplotlib
 pickle-mixin
 sklearn
 PIL
-wordcloud	
-
+wordcloud
+joblib
+os
+io	
+base64
 
 # ----------------------
 # Testing
