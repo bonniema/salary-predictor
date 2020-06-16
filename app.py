@@ -47,23 +47,35 @@ tfidf_vectorizer = pickle.load(open('fitted_vectorizer.pickle','rb'))
 # Routing for your application.
 ###
 
-@app.route('/', methods=['GET'])
+@app.route('/')
 def home():
     """Render website's home page."""
-    return render_template('home.html')
+    return render_template('home.html', salaryRange="", salary_prediction_text="")
 
 
 @app.route('/predict', methods=['POST'])
 def salary_predictor():
 	description = request.form.get('description')
 	result = model.predict(tfidf_vectorizer.transform([description]))
+	return render_template('home.html', salaryRange = labels[result[0]], salary_prediction_text="The salary range of this job:")
 
+	
+
+"""
+@app.route('/images/<word_cloud>')
+def images(word_cloud):
+	return render_template("images.html", title=word_cloud)
+
+
+@app.route('/fig/<word_cloud>')
+def word_cloud():
+
+	description = request.form.get('description')
 	stopwords = set(STOPWORDS)
 	stopwords.update(["to","sex","may","Ability to","Full time","Experience with", "Job Type"])
 
-	wordcloud = WordCloud(stopwords = stopwords,max_font_size=50, max_words=100, background_color='white').generate(description)
+	wordcloud = WordCloud(stopwords = stopwords, max_font_size=50, max_words=100, background_color='white').generate(description)
 
-	
 	plt.figure(figsize=(8,6))
 	plt.imshow(wordcloud, interpolation='bilinear')
 	plt.axis('off')
@@ -74,14 +86,15 @@ def salary_predictor():
 	buf.seek(0)
 
 	#Embed the result in the html output
-	img = base64.encodebytes(buf.getvalue()).decode("ascii")
-	return jsonify(salaryRange=labels[result[0]], word_cloud_image=img)
+	img = base64.b64encode(buf.getvalue())
+	return send_file(img, mimetype = 'image/png')
 	
-
+"""
 
 
 
 """return render_template('home.html', salaryRange = labels[result[0]], salary_prediction_text="The salary range of this job:")
+img = base64.encodebytes(buf.getvalue()).decode("ascii")
 """
 
 if __name__ == '__main__':

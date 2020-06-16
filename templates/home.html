@@ -13,13 +13,12 @@
 </form>
 <br>
 <br>
-<center><h4><span id='most-common-words'>Most Common Words</span></h4></center>
+<center><h4><span id='most-common-words'></span></h4></center>
 <br>
-<img id="word_cloud_image" width=200/>
 <br>
-<center><h4><span id='salary_prediction_text'></span></h4></center>
+<center><h4><span id='salary_prediction_text'>{{salary_prediction_text}}</span></h4></center>
 <br>
-<center><span id='salary-range'></span></center>
+<center><span id='salary-range'>{{salaryRange}}</span></center>
 
 </html>
 
@@ -35,7 +34,7 @@ $('#analyze').on('click', function() {
 	            })
 	            .done(function(response) {
 	            	$('#salary-range').text(response.salaryRange)
-	            	//$('#word_cloud_image').attr("src", 'data:image/png;base64,' + response.word_cloud_image)
+	            	//$('#word_cloud_image').attr("src", 'data:image/png;base64,')
 	            	$('#salary_prediction_text').text("The Salary Range of this Job is: ")
 				});
 	            
