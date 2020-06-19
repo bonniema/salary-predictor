@@ -1,5 +1,6 @@
 <html>
 <h1><center>Job Salary Predictor for Data Related Positions</center></h1>
+<h5><center>*This predictor was built based on around 1000 data related full job descriptions in 1st half 2020 so it might not reflect the current salary range. </center><h5>
 <br>
 <br>
 <form action="{{ url_for('salary_predictor') }}" method="post">
@@ -15,6 +16,9 @@
 <br>
 <center><h4><span id='most-common-words'></span></h4></center>
 <br>
+{% if show_word_cloud %}
+<img src="data:image/png;base64,{{ plot_url }}"></img>
+{% endif %}
 <br>
 <center><h4><span id='salary_prediction_text'>{{salary_prediction_text}}</span></h4></center>
 <br>
@@ -24,22 +28,6 @@
 
 <script> 
 
-
-$('#analyze').on('click', function() {
-				var description = $('#description').text()
-				$.ajax({	
-					type: 'POST',
-	                url: '/predict',
-	                data: {'description': description}
-	            })
-	            .done(function(response) {
-	            	$('#salary-range').text(response.salaryRange)
-	            	//$('#word_cloud_image').attr("src", 'data:image/png;base64,')
-	            	$('#salary_prediction_text').text("The Salary Range of this Job is: ")
-				});
-	            
-	            
-	        });
 
 									
 </script>

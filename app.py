@@ -33,7 +33,7 @@ from wordcloud import WordCloud, STOPWORDS, ImageColorGenerator
 from joblib import dump, load
 from flask.json import jsonify
 
-app = Flask(__name__)
+app = Flask(__name__, static_url_path="/static")
 
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY', 'this_should_be_configured')
 
@@ -50,27 +50,54 @@ tfidf_vectorizer = pickle.load(open('fitted_vectorizer.pickle','rb'))
 @app.route('/')
 def home():
     """Render website's home page."""
-    return render_template('home.html', salaryRange="", salary_prediction_text="")
+    return render_template('home.html', salaryRange="", salary_prediction_text="", show_word_cloud=False)
 
 
 @app.route('/predict', methods=['POST'])
 def salary_predictor():
 	description = request.form.get('description')
 	result = model.predict(tfidf_vectorizer.transform([description]))
-	return render_template('home.html', salaryRange = labels[result[0]], salary_prediction_text="The salary range of this job:")
+	
+	return render_template('home.html', salaryRange = labels[result[0]], show_word_cloud=True, salary_prediction_text="The salary range of this job:")
+
+
+@app.route('/predict')
+def generate_word_cloud(description):
 
 	
+	stopwords = set(STOPWORDS)
+	stopwords.update(["to","sex","may","Ability to","Full time","Experience with", "Job Type"])
+
+	wordcloud = WordCloud(stopwords = stopwords, max_font_size=50, max_words=100, background_color='white').generate(description)
+
+	img = io.StringIO()
+	plt.figure(figsize=(8,6))
+	plt.imshow(wordcloud, interpolation='bilinear')
+	plt.axis('off')
+
+	#Save it to a temporary buffer
+	plt.savefig(img, format='png')
+	img.seek(0)
+
+	plot_url = base64.b64encode(img.getvalue())
+	return render_template('home.html', plot_url=plot_url)
+	
+
 
 """
-@app.route('/images/<word_cloud>')
-def images(word_cloud):
-	return render_template("images.html", title=word_cloud)
 
-
-@app.route('/fig/<word_cloud>')
-def word_cloud():
-
+@app.route('/predict', methods=['POST'])
+def salary_predictor():
 	description = request.form.get('description')
+	result = model.predict(tfidf_vectorizer.transform([description]))
+	generate_word_cloud(description)
+	return render_template('home.html', salaryRange = labels[result[0]], url="/static/images/word_cloud.png", show_word_cloud=True, salary_prediction_text="The salary range of this job:")
+
+
+
+def generate_word_cloud(description):
+
+	
 	stopwords = set(STOPWORDS)
 	stopwords.update(["to","sex","may","Ability to","Full time","Experience with", "Job Type"])
 
@@ -81,19 +108,11 @@ def word_cloud():
 	plt.axis('off')
 
 	#Save it to a temporary buffer
-	buf = io.BytesIO()
-	plt.savefig(buf, format="png")
-	buf.seek(0)
-
-	#Embed the result in the html output
-	img = base64.b64encode(buf.getvalue())
-	return send_file(img, mimetype = 'image/png')
+	plt.savefig('static/images/word_cloud.png')
 	
-"""
 
 
-
-"""return render_template('home.html', salaryRange = labels[result[0]], salary_prediction_text="The salary range of this job:")
+return render_template('home.html', salaryRange = labels[result[0]], salary_prediction_text="The salary range of this job:")
 img = base64.encodebytes(buf.getvalue()).decode("ascii")
 """
 
