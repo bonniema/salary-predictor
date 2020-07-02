@@ -48,7 +48,7 @@ Initial cleaning on job description text: remove stopwords and special character
 Train/Test Accuracy is the primarily metrics to evaluate the classification models. We also take processing time, reusability of the model into consideration. Our best performing model is surprising Model 1 with the highest accuracy (0.71) and shortest processing time.
 
 ### Deployment
-To make this tool accessible to non-technical users, I created a flask app and deployed to heroku here: https://data-job-salary-predictor.herokuapp.com/predict. Users can just copy a full job description in data related fields and paste here to get the salary range.
+To make this tool accessible to non-technical users, I created a flask app and deployed to heroku here: https://data-job-salary-predictor.herokuapp.com. Users can just copy a full job description in data related fields and paste here to get the salary range.
 
 ### Limitation and Future Consideration
 Job salary range can change from time to time depends on economic situation and job market. Therefore the model needs to be constantly trained with refreshed data to produce up to date results. Most of the positions were pulled in late May 2020 when COVID19 impacted North America so the salary range during this period of time may not reflect the "normal".
